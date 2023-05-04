@@ -1,0 +1,24 @@
+{
+  "name": "struct",
+  "version": "1.0.0",
+  "description": "",
+  "main": "docs/index.js",
+  "scripts": {
+    "start": "parcel ./docs/index.html --log-level=2 --port=8080",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "parcel-bundler": "^1.12.5",
+    "parcel-plugin-static-files-copy": "2.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tlecardo/Struct.git"
+  },
+  "author": "Théo.L",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tlecardo/Struct/issues"
+  },
+  "homepage": "https://github.com/tlecardo/Struct#readme"
+}

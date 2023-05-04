@@ -1,0 +1,31 @@
+.conteneur {
+    display: grid;
+    grid-template-areas: "sec_viz sec_question"
+    "sec_data sec_question"
+    "sec_article sec_question";
+    grid-template-columns:  repeat(2, 1fr);;
+    grid-auto-rows: repeat(3, 1fr);
+}
+
+#sec_viz {
+    grid-area: sec_viz; 
+    background-color: blue;
+    height: 200px; 
+}
+
+#sec_data{ 
+    grid-area: sec_data; 
+    background-color: red;
+    height: 200px; 
+}
+
+#sec_article{ 
+    grid-area: sec_article; 
+    background-color: green;
+    height: 200px; 
+}
+
+#sec_question{ 
+    grid-area: sec_question;
+    background-color: aqua; 
+}
