@@ -9,16 +9,13 @@
   },
   "dependencies": {
     "parcel-bundler": "^1.12.5",
-    "parcel-plugin-static-files-copy": "2.6.0"
+    "parcel-plugin-static-files-copy": "2.6.0",
+    "d3": "^7.8.4"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tlecardo/Struct.git"
   },
   "author": "Théo.L",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/tlecardo/Struct/issues"
-  },
-  "homepage": "https://github.com/tlecardo/Struct#readme"
+  "license": "ISC"
 }

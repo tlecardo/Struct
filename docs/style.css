@@ -17,15 +17,21 @@
     grid-area: sec_data; 
     background-color: red;
     height: 200px; 
+    overflow: scroll;
 }
 
 #sec_article{ 
     grid-area: sec_article; 
     background-color: green;
     height: 200px; 
+    overflow: scroll;
 }
 
 #sec_question{ 
     grid-area: sec_question;
     background-color: aqua; 
+}
+
+textarea {
+    width: 100%;
 }
