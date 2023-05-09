@@ -52,65 +52,74 @@ function csv2Json(text, sep) {
     var res = lines.reduce((acc, line) => {
         var obj = {};
         var curr_line = line.split(sep);
-        for (var j=0; j<headers.length;j++){
+        for (var j = 0; j < headers.length; j++) {
             var elem = curr_line[j];
-            obj[headers[j]] = isNaN(elem) ? elem: Number(elem);
+            obj[headers[j]] = isNaN(elem) ? elem : Number(elem);
         }
         acc.push(obj);
         return acc
     },
-    [])
-
+        [])
     return res;
 }
 
 
 // Résumé des données
 function summarizeJson(jsonObj) {
+
     // extract Attributs
     var attrList = Object.keys(jsonObj[0])
     var groupAttr = {}
 
-    attrList.forEach(attr => {groupAttr[attr] = {data: [], type: null, unique: {}}} );
+    attrList.forEach(attr => { groupAttr[attr] = { values: [], type: null, numbers: {}, description: "" } });
 
     jsonObj.forEach(line => {
         attrList.forEach((attr) => {
-            groupAttr[attr].data.push(line[attr]);
-            let nmb = groupAttr[attr].unique[line[attr]]
-            groupAttr[attr].unique[line[attr]] = (nmb !== undefined)? nmb + 1: 1;
+            groupAttr[attr].values.push(line[attr]);
+            let nmb = groupAttr[attr].numbers[line[attr]]
+            groupAttr[attr].numbers[line[attr]] = (nmb !== undefined) ? nmb + 1 : 1;
         })
     })
 
     attrList.forEach(attr => {
-        groupAttr[attr].type = getType(groupAttr[attr]); 
+        groupAttr[attr].type = getType(groupAttr[attr]);
     })
-    console.log(groupAttr)
+    //console.log(groupAttr)
+    getDescript(groupAttr)
 }
 
+function getDescript(obj) {
+    var attrList = Object.keys(obj)
 
+    d3.select('#sec_data')
+        .selectAll(".sc_data")
+        .data(attrList)
+        .enter()
+        .append("div")
+        .attr("id", name => name)
+        .append("input")
+        .attr("placeholder", name => name)
+        .attr("type", "text")
+        .on("keypress", (e, name) => {
+            // INCOMPLET
+            if (e.inputType == "insertText") {
+                obj[name].description += e.data;
+            } else {
+                obj[name].description = obj[name].description.slice(0, -1);
+            }
+        })
 
-function isNotCategorial(obj) {
-    for (let attr in obj.unique) {
-        if (obj.unique[attr] > 1) {
-            return true;
-        }
-    }
-    return false;
 }
 
 
 function getType(obj) {
 
-   
-
-    let local_type = typeof(obj.data[0]);
+    let local_type = typeof (obj.values[0]);
     if (local_type === "number") {
-        //let cat = isNotCategorial(obj.unique)? "numérique": "catégorique";
-        let cat = ""
-        if (Number.isInteger(obj.data[0])) {
-            return `int (${cat})`;
+        if (Number.isInteger(obj.values[0])) {
+            return `int`;
         } else {
-            return `float (${cat})`;
+            return `float`;
         }
     }
 
