@@ -16,8 +16,6 @@
 #sec_data{ 
     grid-area: sec_data; 
     background-color: red;
-    height: 200px; 
-    overflow: scroll;
 }
 
 #sec_article{ 
