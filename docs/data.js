@@ -1,9 +1,11 @@
+import { ImgColor } from "./img";
+
 class Data {
 
     constructor(csv, dataZone, vizZone) {
         this.json = this.#csv2Json(csv, ",");
         this.attrList = Object.keys(this.json[0]);
-
+        this.img = null;
         this.dataZone = dataZone;
         this.vizZone = vizZone;
         this.attr = {};

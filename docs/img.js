@@ -5,8 +5,8 @@ class ImgColor {
         this.colorThief = new ColorThief();
     }
 
-    computePalette(numberColor=10) {
-        this.colors = this.colorThief.getPalette(this.img, 10, numberColor)
+    computePalette(numberColor=3) {
+        this.colors = this.colorThief.getPalette(this.img, numberColor, 10);
     }
 
     #componentToHex(c) {
@@ -24,6 +24,33 @@ class ImgColor {
 
     getColorsCodes() {
         return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))[0]); return prec; }, []);
+    }
+
+    
+    createColorsInput(vizZone) {
+        var colorsName = this.getColorsNames()
+        vizZone = vizZone.selectAll("boxes")
+
+        vizZone.data(colorsName)
+            .enter()
+            .append("label")
+            .attr("for", c => c + "Descr")
+            .text(c => "Couleur " + c + " : ")
+            .append("br")
+
+        let optx = vizZone.data(colorsName)
+            .enter()
+            .append("select")
+            .attr("list", "x_labs")
+            .attr("id", c => c + "Descr")
+
+        optx.selectAll("options")
+            .data(["Sélectionner un attribut"].concat(["A", "B", "C"]))
+            .enter()
+            .append("option")
+            .text(name => name)
+            .append("br")
+
     }
 }
 
