@@ -25,10 +25,11 @@ dataSelec.addEventListener('change', (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.addEventListener('load', (event) => {
-        var dataObj = new Data(event.target.result)
-        dataObj.updateType()
-        dataObj.updateUniqueValues()
-        dataObj.display()
+        var dataObj = new Data(event.target.result, d3.select("#sec_viz"), d3.select("#sec_data"))
+        dataObj.updateType();
+        dataObj.updateUniqueValues();
+        dataObj.createUserInput();
+        dataObj.updateAttrValues();
     })
     reader.readAsText(file)
 })
@@ -56,52 +57,3 @@ vizSelec.addEventListener('change', (e) => {
     reader.readAsDataURL(file)
 
 })
-
-function getLabelAxis(obj) {
-
-    var attrList = Object.keys(obj)
-
-    let viz = d3.select("#sec_viz")
-    
-    viz.append("label")
-        .attr("for", "xLabel")
-        .text("Attribut en X : ")
-
-    let optx = viz.append("select")
-        .attr("list", "x_labs")
-        .attr("id", "xLabel")
-
-    optx.selectAll("options")
-        .data(["Sélectionner un attribut"].concat(attrList))
-        .enter()
-        .append("option")
-        .text(name => name)
-
-    viz.append("br")
-    viz.append("label")
-        .attr("for", "yLabel")
-        .text("Attribut en Y : ")
-
-    let opty = viz.append("select")
-        .attr("list", "y_labs")
-
-    opty.selectAll("option")
-        .data(["Sélectionner un attribut"].concat(attrList))
-        .enter()
-        .append("option")
-        .text(name => name)
-}
-
-function getDescript(obj) {
-    var attrList = Object.keys(obj)
-
-    d3.select('#sec_data')
-        .selectAll(".sec_data")
-        .data(attrList)
-        .enter()
-        .append("div")
-        .attr("id", name => name)
-        .append("input")
-        .attr("placeholder", name => name)
-        .attr("type", "text")
-}

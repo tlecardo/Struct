@@ -1,10 +1,13 @@
 class Data {
 
-    constructor(csv) {
+    constructor(csv, dataZone, vizZone) {
         this.json = this.#csv2Json(csv, ",");
         this.attrList = Object.keys(this.json[0]);
 
-        this.attr = {}
+        this.dataZone = dataZone;
+        this.vizZone = vizZone;
+        this.attr = {};
+
         this.attrList.forEach(item => {
             this.attr[item] = {
                 values: [],
@@ -59,17 +62,18 @@ class Data {
         console.log(this.attr);
     }
 
+    createUserInput() {
+        this.#createLabelAxisInput();
+        this.#createDescriptionInput();
+    }
 
+    #createLabelAxisInput() {
 
-    getLabelAxis() {
-
-        let viz = d3.select("#sec_viz")
-
-        viz.append("label")
+        this.vizZone.append("label")
             .attr("for", "xLabel")
             .text("Attribut en X : ")
 
-        let optx = viz.append("select")
+        let optx = this.vizZone.append("select")
             .attr("list", "x_labs")
             .attr("id", "xLabel")
 
@@ -79,13 +83,14 @@ class Data {
             .append("option")
             .text(name => name)
 
-        viz.append("br")
-        viz.append("label")
+        this.vizZone.append("br")
+        this.vizZone.append("label")
             .attr("for", "yLabel")
             .text("Attribut en Y : ")
 
-        let opty = viz.append("select")
+        let opty = this.vizZone.append("select")
             .attr("list", "y_labs")
+            .attr("id", "yLabel")
 
         opty.selectAll("option")
             .data(["Sélectionner un attribut"].concat(this.attrList))
@@ -94,17 +99,37 @@ class Data {
             .text(name => name)
     }
 
-    getDescript() {
-
-        d3.select('#sec_data')
-            .selectAll(".sec_data")
-            .data(this.attrList)
+    #createDescriptionInput() {
+        this.dataZone.selectAll("boxes").data(this.attrList)
             .enter()
-            .append("div")
-            .attr("id", name => name)
             .append("input")
-            .attr("placeholder", name => name)
+            .attr("id", name => name)
+            .attr("value", name => name)
             .attr("type", "text")
+    }
+
+    updateAttrValues() {
+        d3.select("#update").on("mouseover", (e) => {
+            // update Description
+            this.attrList.forEach(item => {
+                this.attr[item].description = document.getElementById(item).value;
+            })
+
+            // update Axis attribut selection
+            try {
+                const xAxisAttr = d3.select("#yLabel").property("value")
+                this.attr[xAxisAttr].label = "X";
+            } catch { }
+
+            try {
+                const yAxisAttr = d3.select("#xLabel").property("value")
+                this.attr[yAxisAttr].label = "Y";
+            } catch { }
+
+            console.log(this.attr)
+        })
+
+        
     }
 
 }
