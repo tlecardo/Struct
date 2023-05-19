@@ -1,3 +1,6 @@
+import { ImgColor } from "./img.js";
+import { Data } from "./data.js";
+
 // Chargement de l'article
 const fileSelec = document.getElementById("articleInput");
 const articleText = document.getElementById("articleText");
@@ -22,8 +25,10 @@ dataSelec.addEventListener('change', (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.addEventListener('load', (event) => {
-        const jsonFile = csv2Json(event.target.result, ",")
-        summarizeJson(jsonFile)
+        var dataObj = new Data(event.target.result)
+        dataObj.updateType()
+        dataObj.updateUniqueValues()
+        dataObj.display()
     })
     reader.readAsText(file)
 })
@@ -40,103 +45,48 @@ vizSelec.addEventListener('change', (e) => {
 
     reader.addEventListener('load', () => {
         const img = reader.result;
-        //vizText.src = img;
+        vizText.src = img;
+        const im = document.querySelector("img")
+        const imgObject = new ImgColor(im)
+        im.addEventListener("load", () => {
+            imgObject.computePalette()
+            console.log(imgObject.getColorsNames())
+        })
     })
     reader.readAsDataURL(file)
 
 })
 
-
-// Conversion du CSV en JSON
-function csv2Json(text, sep) {
-    var lines = text.split("\n")
-    var headers = lines.shift().split(sep)
-
-    var res = lines.reduce((acc, line) => {
-        var obj = {};
-        var curr_line = line.split(sep);
-        for (var j = 0; j < headers.length; j++) {
-            var elem = curr_line[j];
-            obj[headers[j]] = isNaN(elem) ? elem : Number(elem);
-        }
-        acc.push(obj);
-        return acc
-    },
-        [])
-    return res;
-}
-
-// Résumé des données
-function summarizeJson(jsonObj) {
-
-    // extract Attributs
-    var attrList = Object.keys(jsonObj[0])
-    var groupAttr = {}
-
-    attrList.forEach(attr => { groupAttr[attr] = { values: [], type: null, numbers: {}, description: "", label: null } });
-
-    jsonObj.forEach(line => {
-        attrList.forEach((attr) => {
-            groupAttr[attr].values.push(line[attr]);
-            let nmb = groupAttr[attr].numbers[line[attr]]
-            groupAttr[attr].numbers[line[attr]] = (nmb !== undefined) ? nmb + 1 : 1;
-        })
-    })
-
-    attrList.forEach(attr => {
-        groupAttr[attr].type = getType(groupAttr[attr]);
-    })
-
-    getDescript(groupAttr)
-    getLabelAxis(groupAttr)
-}
-
-
 function getLabelAxis(obj) {
+
     var attrList = Object.keys(obj)
 
-    obj[attrList[0]].label = "X"
-    obj[attrList[1]].label = "Y"
+    let viz = d3.select("#sec_viz")
+    
+    viz.append("label")
+        .attr("for", "xLabel")
+        .text("Attribut en X : ")
 
-    let optx = d3.select('#sec_viz')
-        .append("select")
+    let optx = viz.append("select")
         .attr("list", "x_labs")
-        .on("change", e => {
-
-            for (let attr of attrList) {
-                obj[attr]['label'] = null;
-            }
-
-            let attr = attrList[e.srcElement.selectedIndex]
-            obj[attr]['label'] = "X";
-
-            console.log(obj)
-        })
-
+        .attr("id", "xLabel")
 
     optx.selectAll("options")
-        .data(attrList)
+        .data(["Sélectionner un attribut"].concat(attrList))
         .enter()
         .append("option")
         .text(name => name)
 
-    let opty = d3.select('#sec_viz')
-        .append("select")
+    viz.append("br")
+    viz.append("label")
+        .attr("for", "yLabel")
+        .text("Attribut en Y : ")
+
+    let opty = viz.append("select")
         .attr("list", "y_labs")
-        .on("change", e => {
-
-            for (let attr of attrList) {
-                obj[attr]['label'] = null;
-            }
-
-            let attr = attrList[e.srcElement.selectedIndex]
-            obj[attr]['label'] = "Y";
-
-            console.log(obj)
-        })
 
     opty.selectAll("option")
-        .data(attrList)
+        .data(["Sélectionner un attribut"].concat(attrList))
         .enter()
         .append("option")
         .text(name => name)
@@ -154,28 +104,4 @@ function getDescript(obj) {
         .append("input")
         .attr("placeholder", name => name)
         .attr("type", "text")
-        .on("keypress", (e, name) => {
-            // INCOMPLET
-            if (e.inputType == "insertText") {
-                obj[name].description += e.data;
-            } else {
-                obj[name].description = obj[name].description.slice(0, -1);
-            }
-            console.log(obj)
-        })
-}
-
-
-function getType(obj) {
-
-    let local_type = typeof (obj.values[0]);
-    if (local_type === "number") {
-        if (Number.isInteger(obj.values[0])) {
-            return `int`;
-        } else {
-            return `float`;
-        }
-    }
-
-    return local_type;
 }

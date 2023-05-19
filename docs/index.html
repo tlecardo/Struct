@@ -14,9 +14,9 @@
     <main>
         <div class="conteneur">
             <div id="sec_viz">Visualisation
-                <input type="file" id="vizInput" accept=".png" value="Viz">
+                <input type="file" id="vizInput" value="Viz">
                 <br>
-                <img src="" id="vizText" />
+                <img src="" id="vizText" hidden />
             </div>
             <div id="sec_data">Données
                 <input type="file" id="dataInput" accept=".csv" value="Data">
@@ -30,6 +30,9 @@
         </div>
     </main>
     <script src="https://d3js.org/d3.v7.js"></script>
+    <script type="text/javascript" src="https://chir.ag/projects/ntc/ntc.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     <script type="module" src="index.js"></script>
 </body>
+
 </html>
