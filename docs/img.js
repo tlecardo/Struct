@@ -5,7 +5,7 @@ class ImgColor {
         this.colorThief = new ColorThief();
     }
 
-    computePalette(numberColor=3) {
+    computePalette(numberColor = 3) {
         this.colors = this.colorThief.getPalette(this.img, numberColor, 10);
     }
 
@@ -25,31 +25,31 @@ class ImgColor {
     getColorsCodes() {
         return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))[0]); return prec; }, []);
     }
-    
-    createColorsInput(vizZone) {
-        var colorsName = this.getColorsNames()
+
+    getColors() {
+        return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))); return prec; }, []);
+    }
+
+    createColorsInput(vizZone, data) {
+        var getColors = this.getColors();
         vizZone = vizZone.selectAll("boxes")
 
-        vizZone.data(colorsName)
+        let boxes = vizZone.data(getColors)
             .enter()
-            .append("label")
-            .attr("for", c => c + "Descr")
-            .text(c => "Couleur " + c + " : ")
-            .append("br")
+            .append("div")
+            .attr("class", "colorSelector")
 
-        let optx = vizZone.data(colorsName)
-            .enter()
-            .append("select")
-            .attr("list", "x_labs")
-            .attr("id", c => c + "Descr")
+        boxes.append("div")
+            .attr("class", "rectangle")
+            .style("background-color", c => c[0])
 
-        optx.selectAll("options")
-            .data(["Sélectionner un attribut"].concat(["A", "B", "C"]))
-            .enter()
-            .append("option")
-            .text(name => name)
-            .append("br")
+        boxes.append("label")
+            .attr("for", c => c[1] + "Descr")
+            .text(c => "Couleur " + c[1] + " : ")
 
+        boxes.append("input")
+            .attr("id", c => c[1])
+            .attr("type", "text") 
     }
 }
 

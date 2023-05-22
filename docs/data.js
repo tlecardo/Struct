@@ -40,13 +40,15 @@ class Data {
 
     updateType() {
         this.attrList.forEach(attr => {
-            
-            let local_type = typeof(this.json[0][attr]);
 
-            this.attr[attr].type = (local_type === "number")? (
+            let local_type = typeof (this.json[0][attr]);
+
+            this.attr[attr].type = (local_type === "number") ? (
                 this.attr[attr].type = Number.isInteger(this.json[0][attr]) ? `int` : `float`
-                ) : local_type;
+            ) : local_type;
         })
+
+        return this;
     }
 
     updateUniqueValues() {
@@ -57,6 +59,8 @@ class Data {
                 this.attr[attr].numbers[line[attr]] = (nmb !== undefined) ? nmb + 1 : 1;
             })
         })
+
+        return this;
     }
 
     display() {
@@ -66,42 +70,38 @@ class Data {
     createUserInput() {
         this.#createLabelAxisInput();
         this.#createDescriptionInput();
+
+        return this;
     }
 
-    #createLabelAxisInput() {
+    #createLabelAxis(axis) {
 
-        this.zone.append("label")
-            .attr("for", "xLabel")
-            .text("Attribut en X : ")
+        let selectAxis = this.zone.append("div")
+            .attr("class", `axisSelector`)
 
-        let optx = this.zone.append("select")
-            .attr("list", "x_labs")
-            .attr("id", "xLabel")
+        selectAxis.append("label")
+            .attr("for", `${axis}label`)
+            .text(`Attribut en ${axis} : `)
+
+        let optx = selectAxis.append("select")
+            .attr("list", `${axis}_labs`)
+            .attr("id", `${axis}label`)
 
         optx.selectAll("options")
             .data(["Sélectionner un attribut"].concat(this.attrList))
             .enter()
             .append("option")
             .text(name => name)
+    }
 
-        this.zone.append("br")
-        this.zone.append("label")
-            .attr("for", "yLabel")
-            .text("Attribut en Y : ")
-
-        let opty = this.zone.append("select")
-            .attr("list", "y_labs")
-            .attr("id", "yLabel")
-
-        opty.selectAll("option")
-            .data(["Sélectionner un attribut"].concat(this.attrList))
-            .enter()
-            .append("option")
-            .text(name => name)
+    #createLabelAxisInput() {
+        this.#createLabelAxis("X");
+        this.#createLabelAxis("Y");
     }
 
     #createDescriptionInput() {
-        this.zone.selectAll("boxes").data(this.attrList)
+        this.zone.selectAll("boxes")
+            .data(this.attrList)
             .enter()
             .append("input")
             .attr("id", name => name)
@@ -118,19 +118,19 @@ class Data {
 
             // update Axis attribut selection
             try {
-                const xAxisAttr = d3.select("#yLabel").property("value")
+                const xAxisAttr = d3.select("#Xlabel").property("value")
                 this.attr[xAxisAttr].label = "X";
             } catch { }
 
             try {
-                const yAxisAttr = d3.select("#xLabel").property("value")
+                const yAxisAttr = d3.select("#Ylabel").property("value")
                 this.attr[yAxisAttr].label = "Y";
             } catch { }
 
             console.log(this.attr)
         })
 
-        
+
     }
 
 }
