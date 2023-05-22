@@ -25,7 +25,6 @@ class ImgColor {
     getColorsCodes() {
         return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))[0]); return prec; }, []);
     }
-
     
     createColorsInput(vizZone) {
         var colorsName = this.getColorsNames()

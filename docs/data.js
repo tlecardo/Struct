@@ -2,12 +2,11 @@ import { ImgColor } from "./img";
 
 class Data {
 
-    constructor(csv, dataZone, vizZone) {
+    constructor(csv, zone) {
         this.json = this.#csv2Json(csv, ",");
         this.attrList = Object.keys(this.json[0]);
         this.img = null;
-        this.dataZone = dataZone;
-        this.vizZone = vizZone;
+        this.zone = zone;
         this.attr = {};
 
         this.attrList.forEach(item => {
@@ -71,11 +70,11 @@ class Data {
 
     #createLabelAxisInput() {
 
-        this.vizZone.append("label")
+        this.zone.append("label")
             .attr("for", "xLabel")
             .text("Attribut en X : ")
 
-        let optx = this.vizZone.append("select")
+        let optx = this.zone.append("select")
             .attr("list", "x_labs")
             .attr("id", "xLabel")
 
@@ -85,12 +84,12 @@ class Data {
             .append("option")
             .text(name => name)
 
-        this.vizZone.append("br")
-        this.vizZone.append("label")
+        this.zone.append("br")
+        this.zone.append("label")
             .attr("for", "yLabel")
             .text("Attribut en Y : ")
 
-        let opty = this.vizZone.append("select")
+        let opty = this.zone.append("select")
             .attr("list", "y_labs")
             .attr("id", "yLabel")
 
@@ -102,7 +101,7 @@ class Data {
     }
 
     #createDescriptionInput() {
-        this.dataZone.selectAll("boxes").data(this.attrList)
+        this.zone.selectAll("boxes").data(this.attrList)
             .enter()
             .append("input")
             .attr("id", name => name)

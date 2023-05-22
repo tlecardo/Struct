@@ -1,63 +1,49 @@
 import { ImgColor } from "./img.js";
 import { Data } from "./data.js";
 
+const vizInput = document.getElementById("vizInput");
+const vizText = document.getElementById("vizText");
+const dataInput = document.getElementById("dataInput");
 
-
-var dataGlobal = null;
-
-// Chargement de l'article
-const fileSelec = document.getElementById("articleInput");
-const articleText = document.getElementById("articleText");
-
-fileSelec.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.addEventListener('load', (event) => {
-        articleText.setAttribute("overflow", "scroll");
-        articleText.innerHTML = event.target.result;
-    })
-    reader.readAsText(file)
+var vizPromise = new Promise(function(resolve) {
+    vizInput.addEventListener("change",resolve,false);
+})
+var dataPromise = new Promise(function(resolve) {
+    dataInput.addEventListener("change", resolve, false);
 })
 
+Promise.all([dataPromise, vizPromise]).then(function([eData, eViz]) {
 
-// Chargement des données
-const dataSelec = document.getElementById("dataInput");
-const dataText = document.getElementById("dataText");
+    const fileData = eData.target.files[0];
+    const fileViz = eViz.target.files[0];
 
-dataSelec.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.addEventListener('load', (event) => {
-        dataGlobal = new Data(event.target.result, d3.select("#sec_viz"), d3.select("#sec_data"))
+    var reader1 = new FileReader();
+    var reader2 = new FileReader();
+
+    var loadViz = new Promise(function(resolve) {
+        reader1.addEventListener("load", resolve, false);
+        reader1.readAsDataURL(fileViz);
+    })
+
+    var loadData = new Promise(function(resolve) {
+        reader2.addEventListener("load", resolve, false);
+        reader2.readAsText(fileData);
+    })
+
+    Promise.all([loadViz, loadData]).then(function([eVizLoad, eDataLoad]) {
+
+        var dataGlobal = new Data(eDataLoad.target.result, d3.select("#sec_input"))
         dataGlobal.updateType();
         dataGlobal.updateUniqueValues();
         dataGlobal.createUserInput();
         dataGlobal.updateAttrValues();
-    })
-    reader.readAsText(file)
-})
 
-
-// Chargement de la visualisation
-const vizSelec = document.getElementById("vizInput");
-const vizText = document.getElementById("vizText");
-
-vizSelec.addEventListener('change', (e) => {
-
-    const file = e.target.files[0];
-    const reader = new FileReader();
-
-    reader.addEventListener('load', () => {
-        const img = reader.result;
-        vizText.src = img;
+        vizText.src = eVizLoad.target.result;
         const im = document.querySelector("img");
-        const imgObject = new ImgColor(im);
         im.addEventListener("load", () => {
+            const imgObject = new ImgColor(im);
             imgObject.computePalette();
-            imgObject.createColorsInput(d3.select("#sec_viz"));
-            //console.log(imgObject.getColorsNames());
+            imgObject.createColorsInput(d3.select("#sec_input"));
         })
-    })
-    reader.readAsDataURL(file)
-
-})
+    });
+});
