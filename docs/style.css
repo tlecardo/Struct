@@ -37,7 +37,28 @@ textarea {
     width: 100%;
 }
 
-.rectangle {
-    width:200px;
-    height:10px;
+div.axisSelector, div.colorSelector, div.descripSelector {
+    padding: 1% 5%;
 }
+
+.descripSelector div, .axisSelector div, .colorSelector div {
+    padding: 2px 0px;
+}
+
+svg.color {
+    padding-right: 10px;
+    height: 20px;
+    width: 20px;
+    position: relative;
+}
+
+.colorSelector div label {
+    width: 100px;
+    display: inline-block;
+}
+
+.axisSelector div label {
+    width: 110px;
+    display: inline-block;
+}
+

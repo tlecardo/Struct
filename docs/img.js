@@ -30,22 +30,27 @@ class ImgColor {
         return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))); return prec; }, []);
     }
 
-    createColorsInput(vizZone, data) {
+    createColorsInput(vizZone) {
         var getColors = this.getColors();
-        vizZone = vizZone.selectAll("boxes")
 
-        let boxes = vizZone.data(getColors)
-            .enter()
-            .append("div")
+        vizZone = vizZone.append("div")
             .attr("class", "colorSelector")
 
-        boxes.append("div")
-            .attr("class", "rectangle")
-            .style("background-color", c => c[0])
+        let boxes = vizZone.selectAll("* *").data(getColors)
+            .enter()
+            .append("div")
+
+        boxes.append("svg")
+            .attr("class", "color")
+            .append("rect")
+            .attr("width", "90%")
+            .attr("height", "90%")
+            .attr("rx", "5px")
+            .attr("fill", c => c[0])
 
         boxes.append("label")
             .attr("for", c => c[1] + "Descr")
-            .text(c => "Couleur " + c[1] + " : ")
+            .text(c => c[1])
 
         boxes.append("input")
             .attr("id", c => c[1])

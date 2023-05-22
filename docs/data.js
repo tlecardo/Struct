@@ -13,7 +13,7 @@ class Data {
             this.attr[item] = {
                 values: [],
                 type: null,
-                numbers: {},
+                distincts: {},
                 description: "",
                 label: null
             }
@@ -55,8 +55,8 @@ class Data {
         this.json.forEach(line => {
             this.attrList.forEach((attr) => {
                 this.attr[attr].values.push(line[attr]);
-                let nmb = this.attr[attr].numbers[line[attr]]
-                this.attr[attr].numbers[line[attr]] = (nmb !== undefined) ? nmb + 1 : 1;
+                let nmb = this.attr[attr].distincts[line[attr]]
+                this.attr[attr].distincts[line[attr]] = (nmb !== undefined) ? nmb + 1 : 1;
             })
         })
 
@@ -74,16 +74,15 @@ class Data {
         return this;
     }
 
-    #createLabelAxis(axis) {
+    #createLabelAxis(axis, zone) {
 
-        let selectAxis = this.zone.append("div")
-            .attr("class", `axisSelector`)
+        zone = zone.append("div")
 
-        selectAxis.append("label")
+        zone.append("label")
             .attr("for", `${axis}label`)
-            .text(`Attribut en ${axis} : `)
+            .text(`Attribut en ${axis}`)
 
-        let optx = selectAxis.append("select")
+        let optx = zone.append("select")
             .attr("list", `${axis}_labs`)
             .attr("id", `${axis}label`)
 
@@ -95,18 +94,33 @@ class Data {
     }
 
     #createLabelAxisInput() {
-        this.#createLabelAxis("X");
-        this.#createLabelAxis("Y");
+        let selectAxis = this.zone.append("div")
+            .attr("class", `axisSelector`)
+        this.#createLabelAxis("X", selectAxis);
+        this.#createLabelAxis("Y", selectAxis);
     }
 
     #createDescriptionInput() {
-        this.zone.selectAll("boxes")
+        let zone = this.zone.append("div")
+            .attr("class", "descripSelector")
+
+        zone.selectAll("boxes")
             .data(this.attrList)
             .enter()
+            .append("div")
             .append("input")
             .attr("id", name => name)
             .attr("value", name => name)
             .attr("type", "text")
+    }
+
+    #getAttrAxis(axis) {
+        try {
+            const axisAttr = d3.select(`#${axis}label`).property("value")
+            this.attr[axisAttr].label = axis;
+        } catch {
+            this.attrList.forEach(attr => {if (this.attr[attr].label === axis) {this.attr[attr].label = null;}})
+        }
     }
 
     updateAttrValues() {
@@ -117,17 +131,18 @@ class Data {
             })
 
             // update Axis attribut selection
-            try {
-                const xAxisAttr = d3.select("#Xlabel").property("value")
-                this.attr[xAxisAttr].label = "X";
-            } catch { }
+            this.#getAttrAxis("X");
+            this.#getAttrAxis("Y");
 
-            try {
-                const yAxisAttr = d3.select("#Ylabel").property("value")
-                this.attr[yAxisAttr].label = "Y";
-            } catch { }
+            this.colors = {};
+            let inputs = document.querySelectorAll('.colorSelector div input')
+            let _ = [...inputs].filter(input => input.value !== "").forEach(input => {
+                this.colors[input.id] = input.value;
+            })
 
-            console.log(this.attr)
+            let disp = document.getElementById("display")
+            disp.innerText = JSON.stringify(this.attr);
+            disp.innerText += JSON.stringify(this.colors);
         })
 
 

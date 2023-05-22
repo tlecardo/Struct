@@ -43,7 +43,7 @@ Promise.all([dataPromise, vizPromise]).then(function ([eData, eViz]) {
         img.addEventListener("load", () => {
             const imgObject = new ImgColor(img);
             imgObject.computePalette(5);
-            imgObject.createColorsInput(d3.select("#sec_input"), dataGlobal.attrList);
+            imgObject.createColorsInput(d3.select("#sec_input"));
         })
     });
 });
