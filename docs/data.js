@@ -1,5 +1,3 @@
-import { ImgColor } from "./img";
-
 class Data {
 
     constructor(csv, zone) {
