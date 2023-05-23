@@ -30,7 +30,6 @@
 
 #sec_input{ 
     grid-area: sec_input;
-    background-color: yellow; 
 }
 
 textarea {
@@ -50,6 +49,11 @@ svg.color {
     height: 20px;
     width: 20px;
     position: relative;
+}
+
+.descripSelector div label {
+    width: 130px;
+    display: inline-block;
 }
 
 .colorSelector div label {

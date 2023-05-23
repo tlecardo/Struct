@@ -34,8 +34,7 @@ Promise.all([dataPromise, vizPromise]).then(function ([eData, eViz]) {
     Promise.all([loadViz, loadData]).then(function ([eVizLoad, eDataLoad]) {
 
         var dataGlobal = new Data(eDataLoad.target.result, d3.select("#sec_input"))
-        dataGlobal.updateType()
-            .updateUniqueValues()
+        dataGlobal.update()
             .createUserInput();
         dataGlobal.updateAttrValues();
 

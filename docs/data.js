@@ -36,20 +36,41 @@ class Data {
         return res;
     }
 
-    updateType() {
-        this.attrList.forEach(attr => {
-
-            let local_type = typeof (this.json[0][attr]);
-
-            this.attr[attr].type = (local_type === "number") ? (
-                this.attr[attr].type = Number.isInteger(this.json[0][attr]) ? `int` : `float`
-            ) : local_type;
-        })
+    update() {
+        this.#updateType();
+        this.#updateUniqueValues();
+        this.#updateCat();
 
         return this;
     }
 
-    updateUniqueValues() {
+    #updateType() {
+        // number, int or float
+        this.attrList.forEach(attr => {
+            let local_type = typeof (this.json[0][attr]);
+            this.attr[attr].type = (local_type === "number") ? (
+                this.attr[attr].type = Number.isInteger(this.json[0][attr]) ? `int` : `float`
+            ) : local_type;
+        })
+    }
+
+    #updateCat() {
+        // catégorique, numérique, ordinale
+        this.attrList.forEach(attr => {
+            
+            let typeAttr = this.attr[attr].type;
+            if (typeAttr === "string") {
+                this.attr[attr]["cat"] = "catégorique";
+            } else if (typeAttr === "float") {
+                this.attr[attr]["cat"] = "numérique";
+            } else {
+                this.attr[attr]["cat"] = "autre";
+            }
+        
+        })
+    }
+
+    #updateUniqueValues() {
         this.json.forEach(line => {
             this.attrList.forEach((attr) => {
                 this.attr[attr].values.push(line[attr]);
@@ -57,8 +78,6 @@ class Data {
                 this.attr[attr].distincts[line[attr]] = (nmb !== undefined) ? nmb + 1 : 1;
             })
         })
-
-        return this;
     }
 
     display() {
@@ -68,8 +87,6 @@ class Data {
     createUserInput() {
         this.#createLabelAxisInput();
         this.#createDescriptionInput();
-
-        return this;
     }
 
     #createLabelAxis(axis, zone) {
@@ -102,11 +119,16 @@ class Data {
         let zone = this.zone.append("div")
             .attr("class", "descripSelector")
 
-        zone.selectAll("boxes")
+        zone = zone.selectAll("* *")
             .data(this.attrList)
             .enter()
             .append("div")
-            .append("input")
+
+        zone.append("label")
+            .attr("for", name => name)
+            .text(name => `${name.substring(0, 15)}.`)
+
+        zone.append("input")
             .attr("id", name => name)
             .attr("value", name => name)
             .attr("type", "text")
@@ -142,9 +164,9 @@ class Data {
             disp.innerText = JSON.stringify(this.attr);
             disp.innerText += JSON.stringify(this.colors);
         })
-
-
     }
+
+    
 
 }
 
