@@ -66,7 +66,6 @@ class Data {
             } else {
                 this.attr[attr]["cat"] = "autre";
             }
-        
         })
     }
 
@@ -165,8 +164,6 @@ class Data {
             disp.innerText += JSON.stringify(this.colors);
         })
     }
-
-    
 
 }
 

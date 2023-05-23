@@ -13,21 +13,30 @@
 <body>
     <main>
         <div class="conteneur">
-            <div id="sec_viz">Visualisation
-                <input type="file" id="vizInput" accept=".png" value="Viz">
-                <br>
-                <img src="" id="vizText" hidden />
-            </div>
-            <div id="sec_data">Données
-                <input type="file" id="dataInput" accept=".csv" value="Data">
-            </div>
-            <div id="sec_article">Article
-                <input type="file" id="articleInput" accept=".txt" value="Article">
-                <br>
-                <div id="articleText"></div>
+            <div id="fileInput">
+                <div class="inputSelector">
+                    <div class="textInput">
+                        Visualisation
+                    </div>
+                   <input type="file" id="vizInput" accept="image/png, image/jpeg" value="Viz"> 
+                </div>
+                <div class="inputSelector">
+                    <div class="textInput">
+                        Données
+                    </div>
+                    <input type="file" id="dataInput" accept=".csv" value="Data"> 
+                </div>
+                <div class="inputSelector">
+                    <div class="textInput">
+                        Article
+                    </div>
+                    <input type="file" id="articleInput" accept=".txt" value="Article">
+                </div>
             </div>
             <div id="sec_input"></div>
-            <div id="sec_question">4</div>
+            <div id="sec_question">
+                <img src="" id="vizText" image-resolution="300dpi" width="100%" />
+            </div>
         </div>
         <div id="update">Update Content</div>
         <div id="display"></div>
