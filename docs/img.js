@@ -1,8 +1,21 @@
+import Tesseract from 'tesseract.js';
+
 class ImgColor {
 
     constructor(img) {
         this.img = img;
         this.colorThief = new ColorThief();
+    }
+
+    async getTitle() {
+        let text = await Tesseract.recognize(this.img, 'eng', { logger: m => m}).then(({ data: {text}}) => text)
+
+        let title = ""
+        for (let line of text.split('\n')) {
+            if (line === "") { break; }
+            title = title.concat(" " + line);
+        }
+        console.log(title)
     }
 
     computePalette(numberColor = 3) {

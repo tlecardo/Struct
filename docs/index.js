@@ -63,6 +63,7 @@ Promise.all([dataPromise, vizPromise])
                 const imgObject = new ImgColor(img);
                 imgObject.computePalette(5);
                 imgObject.createColorsInput(d3.select("#sec_input"));
+                imgObject.getTitle();
             })
         });
     });
