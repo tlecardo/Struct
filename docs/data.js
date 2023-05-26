@@ -143,7 +143,7 @@ class Data {
     }
 
     updateAttrValues() {
-        d3.select("#update").on("mouseover", (e) => {
+        d3.select("#updateData").on("mouseover", (e) => {
             // update Description
             this.attrList.forEach(item => {
                 this.attr[item].description = document.getElementById(item).value;

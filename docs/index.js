@@ -1,5 +1,6 @@
 import { ImgColor } from "./img.js";
 import { Data } from "./data.js";
+import { QR } from "./questions.js";
 
 const vizInput = document.getElementById("vizInput");
 const vizText = document.getElementById("vizText");
@@ -13,7 +14,7 @@ var dataPromise = new Promise(function (resolve) {
     dataInput.addEventListener("change", resolve, false);
 })
 
-Promise.all([dataPromise, vizPromise]).then(function ([eData, eViz]) {
+const createPromises = function (eData, eViz) {
 
     const fileData = eData.target.files[0];
     const fileViz = eViz.target.files[0];
@@ -31,18 +32,34 @@ Promise.all([dataPromise, vizPromise]).then(function ([eData, eViz]) {
         reader2.readAsText(fileData);
     })
 
-    Promise.all([loadViz, loadData]).then(function ([eVizLoad, eDataLoad]) {
+    return [loadViz, loadData]
+}
 
-        var dataGlobal = new Data(eDataLoad.target.result, d3.select("#sec_input"))
-        dataGlobal.update()
-            .createUserInput();
-        dataGlobal.updateAttrValues();
 
-        vizText.src = eVizLoad.target.result;
-        img.addEventListener("load", () => {
-            const imgObject = new ImgColor(img);
-            imgObject.computePalette(5);
-            imgObject.createColorsInput(d3.select("#sec_input"));
-        })
+Promise.all([dataPromise, vizPromise])
+    .then(function ([eData, eViz]) {
+
+        Promise.all(createPromises(eData, eViz)).then(function ([eVizLoad, eDataLoad]) {
+
+            var dataGlobal = new Data(eDataLoad.target.result, d3.select("#sec_input"))
+            dataGlobal.update()
+                .createUserInput();
+            dataGlobal.updateAttrValues();
+
+            vizText.src = eVizLoad.target.result;
+            img.addEventListener("load", () => {
+                const imgObject = new ImgColor(img);
+                imgObject.computePalette(5);
+                imgObject.createColorsInput(d3.select("#sec_input"));
+
+                let testQ = {
+                    visuel: [["Quelle est la couleur dominante ?", "Le rouge est la couleur majoritairement présente."],
+                    ["Quelles données sont sur l'axe des ordonnées ?", "Le nombre de cas est représenté sur l'axe Y."]],
+                    data: [["Quand le nombre de cas atteint-il un pic ?", "Le mois de Novembre 2021 correspond au nombre le plus important de cas"]]
+                }
+
+                let qrLocal = new QR(testQ, d3.select("#sec_question"));
+                qrLocal.display();
+            })
+        });
     });
-});
