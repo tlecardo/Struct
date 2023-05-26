@@ -9,9 +9,9 @@ const img = document.getElementsByTagName("img")[0];
 
 
 let testQ = {
-    visuel: [["Quelle est la couleur dominante ?", "Le rouge est la couleur majoritairement présente."],
+    Visuel: [["Quelle est la couleur dominante ?", "Le rouge est la couleur majoritairement présente."],
     ["Quelles données sont sur l'axe des ordonnées ?", "Le nombre de cas est représenté sur l'axe Y."]],
-    data: [["Quand le nombre de cas atteint-il un pic ?", "Le mois de Novembre 2021 correspond au nombre le plus important de cas"]]
+    Data: [["Quand le nombre de cas atteint-il un pic ?", "Le mois de Novembre 2021 correspond au nombre le plus important de cas"]]
 }
 
 let qrLocal = new QR(testQ, d3.select("#sec_question"));

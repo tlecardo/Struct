@@ -26,10 +26,17 @@ class QR {
         qrGlobal.append("text")
             .attr("class", "QRText")
             .text(c => `Q : ${c[0]}`)
+
+
+        qrGlobal.append("text")
+            .text(" | X")
+            .on("click", function() {
+                this.parentNode.remove()
+            })
             .append("br")
 
         qrGlobal.append("text")
-            .text("R : ")
+            .text(" ==> ")
     
         qrGlobal.append("text")
             .attr("class", "QRText")

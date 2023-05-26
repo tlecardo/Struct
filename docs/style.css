@@ -70,3 +70,8 @@ svg.color {
     width: 110px;
     display: inline-block;
 }
+
+
+.partsText {
+    font-size: 15pt;
+}
