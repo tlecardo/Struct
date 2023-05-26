@@ -7,6 +7,18 @@ const vizText = document.getElementById("vizText");
 const dataInput = document.getElementById("dataInput");
 const img = document.getElementsByTagName("img")[0];
 
+
+let testQ = {
+    visuel: [["Quelle est la couleur dominante ?", "Le rouge est la couleur majoritairement présente."],
+    ["Quelles données sont sur l'axe des ordonnées ?", "Le nombre de cas est représenté sur l'axe Y."]],
+    data: [["Quand le nombre de cas atteint-il un pic ?", "Le mois de Novembre 2021 correspond au nombre le plus important de cas"]]
+}
+
+let qrLocal = new QR(testQ, d3.select("#sec_question"));
+qrLocal.display();
+qrLocal.updateQR();
+
+
 var vizPromise = new Promise(function (resolve) {
     vizInput.addEventListener("change", resolve, false);
 })
@@ -51,15 +63,6 @@ Promise.all([dataPromise, vizPromise])
                 const imgObject = new ImgColor(img);
                 imgObject.computePalette(5);
                 imgObject.createColorsInput(d3.select("#sec_input"));
-
-                let testQ = {
-                    visuel: [["Quelle est la couleur dominante ?", "Le rouge est la couleur majoritairement présente."],
-                    ["Quelles données sont sur l'axe des ordonnées ?", "Le nombre de cas est représenté sur l'axe Y."]],
-                    data: [["Quand le nombre de cas atteint-il un pic ?", "Le mois de Novembre 2021 correspond au nombre le plus important de cas"]]
-                }
-
-                let qrLocal = new QR(testQ, d3.select("#sec_question"));
-                qrLocal.display();
             })
         });
     });

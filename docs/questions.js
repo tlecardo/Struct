@@ -12,20 +12,56 @@ class QR {
             .enter()
             .append("div")
             .attr("id", n => n)
+            .attr("class", "parts")
         
         subparts.append("text")
+            .attr("class", "partsText")
             .text(n => n)
 
-        subparts.selectAll("a")
+        let qrGlobal = subparts.selectAll("a")
             .data(n => this.questions[n])
             .enter()
             .append("div")
-            .append("text")
-            .text(c => `Q : ${c[0]} => R : ${c[1]}`)
+
+        qrGlobal.append("text")
+            .attr("class", "QRText")
+            .text(c => `Q : ${c[0]}`)
+            .append("br")
+
+        qrGlobal.append("text")
+            .text("R : ")
+    
+        qrGlobal.append("text")
+            .attr("class", "QRText")
+            .attr("contenteditable", true)
+            .text(c => c[1])
     }
 
     updateQR() {
-        return;
+
+        d3.select("#updateQR").on("mouseover", (e) => {
+            let currentPart = null;
+            let res = {}
+            let isQuestion = true;
+            let localQR = []
+
+            let inputs = document.querySelectorAll('#sec_question div text')
+            let _ = [...inputs].forEach(input => {
+                if (input.className === "partsText") {
+                    currentPart = input.textContent;
+                    res[currentPart] = []
+                } if(input.className === "QRText") {
+                    localQR.push(input.textContent)
+                    if (!isQuestion) {
+                        res[currentPart].push(localQR)
+                        localQR = []
+                    }
+                    isQuestion = !isQuestion;
+                }
+            })
+            let disp = document.getElementById("display")
+            disp.innerText = JSON.stringify(res);
+        })
     }
 }
 
