@@ -7,7 +7,6 @@ const vizText = document.getElementById("vizText");
 const dataInput = document.getElementById("dataInput");
 const img = document.getElementsByTagName("img")[0];
 
-
 let testQ = {
     Visuel: [["Quelle est la couleur dominante ?", "Le rouge est la couleur majoritairement présente."],
     ["Quelles données sont sur l'axe des ordonnées ?", "Le nombre de cas est représenté sur l'axe Y."]],
@@ -17,7 +16,6 @@ let testQ = {
 let qrLocal = new QR(testQ, d3.select("#sec_question"));
 qrLocal.display();
 qrLocal.updateQR();
-
 
 var vizPromise = new Promise(function (resolve) {
     vizInput.addEventListener("change", resolve, false);
@@ -35,7 +33,12 @@ const createPromises = function (eData, eViz) {
     var reader2 = new FileReader();
 
     var loadViz = new Promise(function (resolve) {
-        reader1.addEventListener("load", resolve, false);
+
+        reader1.addEventListener("load", (eVizLoad) => {
+            vizText.src = eVizLoad.target.result;
+            img.addEventListener("load", resolve, false)
+            })
+
         reader1.readAsDataURL(fileViz);
     })
 
@@ -51,19 +54,16 @@ const createPromises = function (eData, eViz) {
 Promise.all([dataPromise, vizPromise])
     .then(function ([eData, eViz]) {
 
-        Promise.all(createPromises(eData, eViz)).then(function ([eVizLoad, eDataLoad]) {
+        Promise.all(createPromises(eData, eViz)).then(function ([_, eDataLoad]) {
 
             var dataGlobal = new Data(eDataLoad.target.result, d3.select("#sec_input"))
             dataGlobal.update()
                 .createUserInput();
             dataGlobal.updateAttrValues();
 
-            vizText.src = eVizLoad.target.result;
-            img.addEventListener("load", () => {
-                const imgObject = new ImgColor(img);
-                imgObject.computePalette(5);
-                imgObject.createColorsInput(d3.select("#sec_input"));
-                imgObject.getTitle();
-            })
+            const imgObject = new ImgColor(img);
+            imgObject.computePalette(5);
+            imgObject.createColorsInput(d3.select("#sec_input"));
+            imgObject.createTitleInput(d3.select("#sec_input"));
         });
-    });
+    })

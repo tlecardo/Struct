@@ -131,6 +131,7 @@ class Data {
             .attr("id", name => name)
             .attr("value", name => name)
             .attr("type", "text")
+            .attr("size", "50")
     }
 
     #getAttrAxis(axis) {

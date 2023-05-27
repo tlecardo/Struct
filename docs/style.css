@@ -41,11 +41,11 @@ div.textInput {
     width: 100px;
 }
 
-div.axisSelector, div.colorSelector, div.descripSelector {
+div.axisSelector, div.colorSelector, div.descripSelector, div.titleSelector {
     padding: 1% 5%;
 }
 
-.descripSelector div, .axisSelector div, .colorSelector div {
+.descripSelector div, .axisSelector div, .colorSelector div, .titleSelector div {
     padding: 2px 0px;
 }
 
@@ -67,6 +67,11 @@ svg.color {
 }
 
 .axisSelector div label {
+    width: 110px;
+    display: inline-block;
+}
+
+.titleSelector div label {
     width: 110px;
     display: inline-block;
 }

@@ -7,15 +7,44 @@ class ImgColor {
         this.colorThief = new ColorThief();
     }
 
-    async getTitle() {
-        let text = await Tesseract.recognize(this.img, 'eng', { logger: m => m}).then(({ data: {text}}) => text)
+    #getTitle() {
+        const myPromise = new Promise(resolve => {
 
-        let title = ""
-        for (let line of text.split('\n')) {
-            if (line === "") { break; }
-            title = title.concat(" " + line);
-        }
-        console.log(title)
+            Tesseract.recognize(this.img, 'eng', { logger: m => m })
+                .then(({ data: { text } }) => text)
+                .then(text => {
+                    let title = ""
+                    for (let line of text.split('\n')) {
+                        if (line === "") { break; }
+                        title = title.concat(" " + line);
+                    }
+                    this.text = text;
+                    console.log(text)
+                    resolve(title);
+                })
+        })
+        return myPromise
+    }
+
+    createTitleInput(vizZone) {
+
+        let node = vizZone.node();
+        let titleNode = document.createElement("div")
+        titleNode.className = "titleSelector"
+        node.insertBefore(titleNode, node.childNodes[0]);
+
+        let zone = d3.selectAll("div.titleSelector").append("div")
+
+        zone.append("label")
+            .attr("for", "title")
+            .text("Titre")
+
+        let input = zone.append("input")
+            .attr("id", "title")
+            .attr("value", "Titre")
+            .attr("type", "text")
+
+        this.#getTitle().then(x => { input.attr("value", x).attr("size", "50") });
     }
 
     computePalette(numberColor = 3) {
@@ -29,14 +58,6 @@ class ImgColor {
 
     #rgbToHex(arr) {
         return "#" + this.#componentToHex(arr[0]) + this.#componentToHex(arr[1]) + this.#componentToHex(arr[2]);
-    }
-
-    getColorsNames() {
-        return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))[1]); return prec; }, []);
-    }
-
-    getColorsCodes() {
-        return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))[0]); return prec; }, []);
     }
 
     getColors() {
@@ -67,7 +88,7 @@ class ImgColor {
 
         boxes.append("input")
             .attr("id", c => c[1])
-            .attr("type", "text") 
+            .attr("type", "text")
     }
 }
 
