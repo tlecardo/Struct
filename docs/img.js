@@ -1,5 +1,3 @@
-import Tesseract from 'tesseract.js';
-
 class ImgColor {
 
     constructor(img) {
@@ -19,7 +17,6 @@ class ImgColor {
                         title = title.concat(" " + line);
                     }
                     this.text = text;
-                    console.log(text)
                     resolve(title);
                 })
         })
