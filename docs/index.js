@@ -3,7 +3,7 @@ import { Data } from "./data.js";
 import { QR } from "./questions.js";
 
 const vizInput = document.getElementById("vizInput");
-const vizText = document.getElementById("vizText");
+const textInput = document.getElementById("articleInput");
 const dataInput = document.getElementById("dataInput");
 const img = document.getElementsByTagName("img")[0];
 
@@ -13,14 +13,13 @@ let testQ = {
     Data: [["Quand le nombre de cas atteint-il un pic ?", "Le mois de Novembre 2021 correspond au nombre le plus important de cas"]]
 }
 
-var vizPromise = new Promise(function (resolve) {
-    vizInput.addEventListener("change", resolve, false);
-})
-var dataPromise = new Promise(function (resolve) {
-    dataInput.addEventListener("change", resolve, false);
-})
+var nwPromise = function(zone) {
+    return new Promise(function (resolve) {
+        zone.addEventListener("change", resolve, false);
+    })
+}
 
-const createPromises = function (eData, eViz) {
+const createPromises = function (eData, eViz, eText) {
 
     const fileData = eData.target.files[0];
     const fileViz = eViz.target.files[0];
@@ -34,7 +33,6 @@ const createPromises = function (eData, eViz) {
             vizText.src = eVizLoad.target.result;
             img.addEventListener("load", resolve, false)
             })
-
         reader1.readAsDataURL(fileViz);
     })
 
@@ -42,15 +40,13 @@ const createPromises = function (eData, eViz) {
         reader2.addEventListener("load", resolve, false);
         reader2.readAsText(fileData);
     })
-
     return [loadViz, loadData]
 }
 
+Promise.all([nwPromise(dataInput), nwPromise(vizInput), nwPromise(textInput)])
+    .then(function ([eData, eViz, eText]) {
 
-Promise.all([dataPromise, vizPromise])
-    .then(function ([eData, eViz]) {
-
-        Promise.all(createPromises(eData, eViz)).then(function ([_, eDataLoad]) {
+        Promise.all(createPromises(eData, eViz, eText)).then(function ([_, eDataLoad]) {
 
             var dataGlobal = new Data(eDataLoad.target.result, d3.select("#sec_input"))
             dataGlobal.update()
