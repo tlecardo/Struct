@@ -13,10 +13,6 @@ let testQ = {
     Data: [["Quand le nombre de cas atteint-il un pic ?", "Le mois de Novembre 2021 correspond au nombre le plus important de cas"]]
 }
 
-let qrLocal = new QR(testQ, d3.select("#sec_question"));
-qrLocal.display();
-qrLocal.updateQR();
-
 var vizPromise = new Promise(function (resolve) {
     vizInput.addEventListener("change", resolve, false);
 })
@@ -65,5 +61,9 @@ Promise.all([dataPromise, vizPromise])
             imgObject.computePalette(5);
             imgObject.createColorsInput(d3.select("#sec_input"));
             imgObject.createTitleInput(d3.select("#sec_input"));
+
+            let qrLocal = new QR(testQ, d3.select("#sec_question"));
+            qrLocal.display();
+            qrLocal.updateQR();
         });
     })
