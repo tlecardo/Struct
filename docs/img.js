@@ -64,11 +64,19 @@ class ImgColor {
         return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))); return prec; }, []);
     }
 
-    createColorsInput(vizZone) {
+    createColorsInput(vizZone, attrList) {
         let getColors = this.getColors();
 
-        vizZone = vizZone.append("div")
-            .attr("class", "colorSelector");
+        vizZone = vizZone.append("div").attr("class", "colorSelector");
+
+        let list = vizZone.append("datalist").attr("id", "attrs")
+
+        list.selectAll("*")
+            .data(attrList)
+            .enter()
+            .append("option")
+            .attr("value", name => name)
+            .text(name => name)
 
         let boxes = vizZone.selectAll("* *").data(getColors)
             .enter()
@@ -85,11 +93,12 @@ class ImgColor {
         boxes.append("label")
             .attr("for", c => c[1] + "Descr")
             .text(c => c[1]);
-
+        
         boxes.append("input")
             .attr("id", c => c[1])
-            .attr("type", "text");
-        
+            .attr("type", "search")
+            .attr("list", "attrs")
+
         return this;
     }
 }

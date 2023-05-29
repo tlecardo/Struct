@@ -22,7 +22,7 @@ class Data {
 
     addImg(img) {
         this.img = new ImgColor(img);
-        this.img.computePalette(5);
+        this.img.computePalette(10);
     }
 
     #csv2Json(text, sep) {
@@ -93,7 +93,7 @@ class Data {
     createUserInput() {
         this.#createLabelAxisInput();
         this.#createDescriptionInput();
-        this.img.createColorsInput(this.zone);
+        this.img.createColorsInput(this.zone, this.attrList);
         this.img.createTitleInput(this.zone);
     }
 
@@ -175,6 +175,8 @@ class Data {
 
             if ( Xatt !== "Sélectionner un attribut" && Yatt !== "Sélectionner un attribut") {
                 console.log(this.textIntro(Xatt, Yatt))
+                console.log(this.textAttr());
+                console.log(this.textColors());
             }
         })
     }
@@ -183,6 +185,26 @@ class Data {
         return `Il s'agit d'un graphique intitulé ${this.img.title}. 
         L'axe X représente ${this.attr[Xatt].description}. Il s'agit de données ${this.attr[Xatt].cat}. 
         L'axe Y représente ${this.attr[Yatt].description}. Il s'agit de données ${this.attr[Yatt].cat}.`;
+    }
+
+    textColors() {
+        let text = `Les couleurs majoritaires sont le `;
+        Object.keys(this.colors).forEach( c => text += c);
+        text += ". ";
+        
+        Object.entries(this.colors).forEach( (c) => {
+            text += `Le ${c[0]} représente ${c[1]}. `
+        });
+
+        return text;
+    }
+
+    textAttr() {
+        let text = "";
+        for (let couple of Object.entries(this.attr)) {
+            text += `L'attribut "${couple[0]}" correspond à ${couple[1].description}.`
+        }
+        return text;
     }
 
 }
