@@ -144,12 +144,13 @@ class Data {
     }
 
     #getAttrAxis(axis) {
+        const axisAttr = d3.select(`#${axis}label`).property("value")
         try {
-            const axisAttr = d3.select(`#${axis}label`).property("value")
             this.attr[axisAttr].label = axis;
         } catch {
             this.attrList.forEach(attr => {if (this.attr[attr].label === axis) {this.attr[attr].label = null;}})
         }
+        return axisAttr;
     }
 
     updateAttrValues() {
@@ -158,10 +159,9 @@ class Data {
             this.attrList.forEach(item => {
                 this.attr[item].description = document.getElementById(item).value;
             })
-
             // update Axis attribut selection
-            this.#getAttrAxis("X");
-            this.#getAttrAxis("Y");
+            let Xatt = this.#getAttrAxis("X");
+            let Yatt = this.#getAttrAxis("Y");
 
             this.colors = {};
             let inputs = document.querySelectorAll('.colorSelector div input')
@@ -172,7 +172,17 @@ class Data {
             let disp = document.getElementById("display")
             disp.innerText = JSON.stringify(this.attr);
             disp.innerText += JSON.stringify(this.colors);
+
+            if ( Xatt !== "Sélectionner un attribut" && Yatt !== "Sélectionner un attribut") {
+                console.log(this.textIntro(Xatt, Yatt))
+            }
         })
+    }
+
+    textIntro(Xatt, Yatt) {
+        return `Il s'agit d'un graphique intitulé ${this.img.title}. 
+        L'axe X représente ${this.attr[Xatt].description}. Il s'agit de données ${this.attr[Xatt].cat}. 
+        L'axe Y représente ${this.attr[Yatt].description}. Il s'agit de données ${this.attr[Yatt].cat}.`;
     }
 
 }

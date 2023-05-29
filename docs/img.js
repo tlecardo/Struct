@@ -17,6 +17,7 @@ class ImgColor {
                         title = title.concat(" " + line);
                     }
                     this.text = text;
+                    this.title = title;
                     resolve(title);
                 })
         })
