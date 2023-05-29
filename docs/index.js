@@ -1,4 +1,3 @@
-import { ImgColor } from "./img.js";
 import { Data } from "./data.js";
 import { QR } from "./questions.js";
 
@@ -47,16 +46,14 @@ Promise.all([nwPromise(dataInput), nwPromise(vizInput), nwPromise(textInput)])
     .then(function ([eData, eViz, eText]) {
 
         Promise.all(createPromises(eData, eViz, eText)).then(function ([_, eDataLoad]) {
+            let zone = d3.select("#sec_input")
 
-            var dataGlobal = new Data(eDataLoad.target.result, d3.select("#sec_input"))
-            dataGlobal.update()
-                .createUserInput();
+            var dataGlobal = new Data(eDataLoad.target.result, zone);
+            
+            dataGlobal.addImg(img);
+            dataGlobal.update();
+            dataGlobal.createUserInput();
             dataGlobal.updateAttrValues();
-
-            const imgObject = new ImgColor(img);
-            imgObject.computePalette(5);
-            imgObject.createColorsInput(d3.select("#sec_input"));
-            imgObject.createTitleInput(d3.select("#sec_input"));
 
             let qrLocal = new QR(testQ, d3.select("#sec_question"));
             qrLocal.display();

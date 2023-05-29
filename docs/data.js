@@ -1,3 +1,5 @@
+import { ImgColor } from "./img.js";
+
 class Data {
 
     constructor(csv, zone) {
@@ -16,6 +18,11 @@ class Data {
                 label: null
             }
         });
+    }
+
+    addImg(img) {
+        this.img = new ImgColor(img);
+        this.img.computePalette(5);
     }
 
     #csv2Json(text, sep) {
@@ -86,6 +93,8 @@ class Data {
     createUserInput() {
         this.#createLabelAxisInput();
         this.#createDescriptionInput();
+        this.img.createColorsInput(this.zone);
+        this.img.createTitleInput(this.zone);
     }
 
     #createLabelAxis(axis, zone) {

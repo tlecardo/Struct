@@ -8,7 +8,7 @@ class ImgColor {
     #getTitle() {
         const myPromise = new Promise(resolve => {
 
-            Tesseract.recognize(this.img, 'eng', { logger: m => m })
+            Tesseract.recognize(this.img, 'fra', { logger: m => m })
                 .then(({ data: { text } }) => text)
                 .then(text => {
                     let title = ""
@@ -20,28 +20,30 @@ class ImgColor {
                     resolve(title);
                 })
         })
-        return myPromise
+        return myPromise;
     }
 
     createTitleInput(vizZone) {
 
         let node = vizZone.node();
-        let titleNode = document.createElement("div")
-        titleNode.className = "titleSelector"
+        let titleNode = document.createElement("div");
+        titleNode.className = "titleSelector";
         node.insertBefore(titleNode, node.childNodes[0]);
 
-        let zone = d3.selectAll("div.titleSelector").append("div")
+        let zone = d3.selectAll("div.titleSelector").append("div");
 
         zone.append("label")
             .attr("for", "title")
-            .text("Titre")
+            .text("Titre");
 
         let input = zone.append("input")
             .attr("id", "title")
             .attr("value", "Titre")
-            .attr("type", "text")
+            .attr("type", "text");
 
         this.#getTitle().then(x => { input.attr("value", x).attr("size", "50") });
+
+        return this;
     }
 
     computePalette(numberColor = 3) {
@@ -49,7 +51,7 @@ class ImgColor {
     }
 
     #componentToHex(c) {
-        var hex = c.toString(16);
+        let hex = c.toString(16);
         return hex.length == 1 ? "0" + hex : hex;
     }
 
@@ -62,14 +64,14 @@ class ImgColor {
     }
 
     createColorsInput(vizZone) {
-        var getColors = this.getColors();
+        let getColors = this.getColors();
 
         vizZone = vizZone.append("div")
-            .attr("class", "colorSelector")
+            .attr("class", "colorSelector");
 
         let boxes = vizZone.selectAll("* *").data(getColors)
             .enter()
-            .append("div")
+            .append("div");
 
         boxes.append("svg")
             .attr("class", "color")
@@ -77,15 +79,17 @@ class ImgColor {
             .attr("width", "90%")
             .attr("height", "90%")
             .attr("rx", "5px")
-            .attr("fill", c => c[0])
+            .attr("fill", c => c[0]);
 
         boxes.append("label")
             .attr("for", c => c[1] + "Descr")
-            .text(c => c[1])
+            .text(c => c[1]);
 
         boxes.append("input")
             .attr("id", c => c[1])
-            .attr("type", "text")
+            .attr("type", "text");
+        
+        return this;
     }
 }
 
