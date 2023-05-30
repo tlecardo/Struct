@@ -64,7 +64,7 @@ class ImgColor {
         return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))); return prec; }, []);
     }
 
-    createColorsInput(vizZone, attrList = []) {
+    createColorsInput(vizZone, attrList) {
         let colors = this.getColors();
 
         let viz_sec = vizZone.append("div")
