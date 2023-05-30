@@ -221,7 +221,6 @@ class Data {
         return Object.entries(this.attr).reduce((acc, c) => {
             let text = `${acc} L'attribut "${c[0]}" correspond à ${c[1].description}. Il s'agit d'un attribut ${c[1].cat}`
             let values = Object.keys(c[1].distincts);
-            console.log(values)
             switch(c[1].cat) {
                 case CATEGORIQUE:
                 case ORDINAL:
