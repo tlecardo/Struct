@@ -48,7 +48,7 @@ class ImgColor {
     }
 
     computePalette(numberColor = 3) {
-        this.colors = this.colorThief.getPalette(this.img, numberColor, 10);
+        this.colors = this.colorThief.getPalette(this.img, numberColor, 1);
     }
 
     #componentToHex(c) {
@@ -64,24 +64,26 @@ class ImgColor {
         return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))); return prec; }, []);
     }
 
-    createColorsInput(vizZone, attrList) {
-        let getColors = this.getColors();
+    createColorsInput(vizZone, attrList = []) {
+        let colors = this.getColors();
 
-        vizZone = vizZone.append("div").attr("class", "colorSelector");
+        let viz_sec = vizZone.append("div")
+            .attr("class", "colorSelector");
 
-        let list = vizZone.append("datalist").attr("id", "attrs")
-
-        list.selectAll("*")
+        viz_sec.append("datalist")
+            .attr("id", "attrs")
+            .selectAll("*")
             .data(attrList)
             .enter()
             .append("option")
-            .attr("value", name => name)
-            .text(name => name)
-
-        let boxes = vizZone.selectAll("* *").data(getColors)
+            .attr("value", n => n)
+            .text(n => n)
+        
+        let boxes = viz_sec.selectAll("color")
+            .data(colors)
             .enter()
             .append("div");
-
+        
         boxes.append("svg")
             .attr("class", "color")
             .append("rect")
@@ -93,12 +95,12 @@ class ImgColor {
         boxes.append("label")
             .attr("for", c => c[1] + "Descr")
             .text(c => c[1]);
-        
+
         boxes.append("input")
             .attr("id", c => c[1])
             .attr("type", "search")
             .attr("list", "attrs")
-
+        
         return this;
     }
 }

@@ -20,9 +20,9 @@ class Data {
         });
     }
 
-    addImg(img) {
+    addImg(img) { 
         this.img = new ImgColor(img);
-        this.img.computePalette(10);
+        this.img.computePalette(5);
     }
 
     #csv2Json(text, sep) {
