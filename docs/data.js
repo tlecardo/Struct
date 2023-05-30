@@ -1,5 +1,9 @@
 import { ImgColor } from "./img.js";
 
+let CATEGORIQUE = "catégorique";
+let ORDINAL = "ordinal";
+let NUM = "numérique";
+
 class Data {
 
     constructor(csv, zone) {
@@ -71,9 +75,9 @@ class Data {
 
             let typeAttr = this.attr[attr].type;
             if (typeAttr === "string") {
-                this.attr[attr]["cat"] = "catégorique";
+                this.attr[attr]["cat"] = CATEGORIQUE;
             } else if (typeAttr === "float") {
-                this.attr[attr]["cat"] = "numérique";
+                this.attr[attr]["cat"] = NUM;
             } else {
                 this.attr[attr]["cat"] = "autre";
             }
@@ -161,7 +165,7 @@ class Data {
         d3.select("#updateData").on("mouseover", (e) => {
             // update Description
             this.attrList.forEach(item => {
-                this.attr[item].description = document.getElementById(item).value;
+                this.attr[item].description = document.getElementById(item).value.toLowerCase();
             })
             // update Axis attribut selection
             let Xatt = this.#getAttrAxis("X");
@@ -170,12 +174,11 @@ class Data {
             this.colors = {};
             let inputs = document.querySelectorAll('.colorSelector div input')
             let _ = [...inputs].filter(input => input.value !== "").forEach(input => {
-                this.colors[input.id] = input.value;
+                this.colors[input.id] = input.value.toLowerCase();
             })
 
             let disp = document.getElementById("display")
-            disp.innerText = JSON.stringify(this.attr);
-            disp.innerText += JSON.stringify(this.colors);
+            disp.innerText = JSON.stringify(this.attr) + JSON.stringify(this.colors);
 
             if (Xatt !== "Sélectionner un attribut" && Yatt !== "Sélectionner un attribut") {
                 console.log(this.textIntro(Xatt, Yatt))
@@ -189,7 +192,7 @@ class Data {
     }
 
     textIntro(Xatt, Yatt) {
-        return `Il s'agit d'un graphique intitulé ${this.img.title}. 
+        return `Il s'agit d'un graphique intitulé "${this.img.title}". 
         L'axe X représente ${this.attr[Xatt].description}. Il s'agit de données ${this.attr[Xatt].cat}. 
         L'axe Y représente ${this.attr[Yatt].description}. Il s'agit de données ${this.attr[Yatt].cat}.`;
     }
@@ -197,27 +200,41 @@ class Data {
     textColors() {
         let len = this.colors.length;
         if (len != 0) {
-            let text = (len === 1) ? "La couleur majoritaire est le " : "Les couleurs majoritaires sont le ";
+            let text = (len === 1) ? "La couleur majoritaire est " : "Les couleurs majoritaires sont ";
 
-            Object.keys(this.colors).forEach(c => text += c + ', ');
-            text = text.slice(0, -2);
-            text += ". ";
+            Object.keys(this.colors).forEach(c => text += `le ${c}, `);
 
             return Object.entries(this.colors).reduce((acc, c) =>
-                `${acc} Le ${c[0]} représente le ${c[1]}. `, text);
+                `${acc} Le ${c[0]} représente le ${c[1]}.`,
+                text.replace(/, $/, "."));
         }
     }
 
     textData() {
         let data = JSON.stringify(this.json);
         data = data.replace("[", "(").replace("]", ")")
-        data = data.replace("{", "[").replace("}", "]")
+            .replace("{", "[").replace("}", "]")
         return `Il représente les données suivantes : ${data}`
     }
 
     textAttr() {
-        return Object.entries(this.attr).reduce((acc, c) =>
-            `${acc} L'attribut "${c[0]}" correspond à ${c[1].description}.`, "")
+        return Object.entries(this.attr).reduce((acc, c) => {
+            let text = `${acc} L'attribut "${c[0]}" correspond à ${c[1].description}. Il s'agit d'un attribut ${c[1].cat}`
+            let values = Object.keys(c[1].distincts);
+            console.log(values)
+            switch(c[1].cat) {
+                case CATEGORIQUE:
+                case ORDINAL:
+                    text += ` ayant les valeurs ["${`${values}`.replaceAll(",", '", "')}"].`
+                    break;
+                case NUM:
+                    text += ` allant de ${Math.min(values)} à ${Math.max(values)}.`
+                    break;
+                default:
+                    text += "."
+            }
+            return text;
+        }, "")
     }
 
     textArticle() {
