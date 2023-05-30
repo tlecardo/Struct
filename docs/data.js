@@ -74,12 +74,20 @@ class Data {
         this.attrList.forEach(attr => {
 
             let typeAttr = this.attr[attr].type;
-            if (typeAttr === "string") {
-                this.attr[attr]["cat"] = CATEGORIQUE;
-            } else if (typeAttr === "float") {
-                this.attr[attr]["cat"] = NUM;
-            } else {
-                this.attr[attr]["cat"] = "autre";
+            let values = this.attr[attr].values;
+            switch (typeAttr) {
+                case "string":
+                    this.attr[attr]["cat"] = CATEGORIQUE;
+                    break;
+                case "float":
+                    this.attr[attr]["cat"] = NUM;
+                    break;
+                default:
+                    if (Math.min(values) < 0) {
+                        this.attr[attr]["cat"] = NUM;
+                    } else { // type INT
+                        this.attr[attr]["cat"] = Math.min(values) - Math.max(values) < 99 ? CATEGORIQUE : NUM;
+                    }
             }
         })
     }
@@ -174,7 +182,11 @@ class Data {
             this.colors = {};
             let inputs = document.querySelectorAll('.colorSelector div input')
             let _ = [...inputs].filter(input => input.value !== "").forEach(input => {
-                this.colors[input.id] = input.value.toLowerCase();
+                try {
+                    this.colors[input.id] = this.attr[input.value].description;
+                } catch (e) {
+                    this.colors[input.id] = input.value.toLowerCase();
+                }
             })
 
             let disp = document.getElementById("display")
@@ -183,10 +195,10 @@ class Data {
             if (Xatt !== "Sélectionner un attribut" && Yatt !== "Sélectionner un attribut") {
                 console.log(this.textIntro(Xatt, Yatt))
                 // Subdivision de la visualisation
-                console.log(this.textColors());
-                console.log(this.textData());
+                // console.log(this.textColors());
+                // console.log(this.textData());
                 console.log(this.textAttr());
-                console.log(this.textArticle());
+                // console.log(this.textArticle());
             }
         })
     }
@@ -220,14 +232,15 @@ class Data {
     textAttr() {
         return Object.entries(this.attr).reduce((acc, c) => {
             let text = `${acc} L'attribut "${c[0]}" correspond à ${c[1].description}. Il s'agit d'un attribut ${c[1].cat}`
-            let values = Object.keys(c[1].distincts);
-            switch(c[1].cat) {
+            const values = c[1].values;
+            console.log(Math.min(...values))
+            switch (c[1].cat) {
                 case CATEGORIQUE:
                 case ORDINAL:
-                    text += ` ayant les valeurs ["${`${values}`.replaceAll(",", '", "')}"].`
+                    text += ` ayant les valeurs ["${`${values}`.replaceAll(",", ', ')}"].`
                     break;
                 case NUM:
-                    text += ` allant de ${Math.min(values)} à ${Math.max(values)}.`
+                    text += ` allant de ${Math.min(...values)} à ${Math.max(...values)}.`
                     break;
                 default:
                     text += "."
@@ -239,6 +252,15 @@ class Data {
     textArticle() {
         return `Il est accompagné de l'article de presse suivant : "${this.article}".`;
     }
+
+    textQuestionVisuel() {
+        return "[FR] Quelles sont les 25 questions sur les couleurs, formes, visuels et ordonnancement \
+        les plus informatives à propos du graphique suivant : "
+    }
+
+    textQuestionData() {
+        return "[FR] Quelles sont les 25 questions les plus informatives sur les données à propos du graphique suivant : "
+    }
 }
 
-export { Data };
+export { Data };    
