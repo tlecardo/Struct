@@ -22,9 +22,11 @@ const createPromises = function (eData, eViz, eText) {
 
     const fileData = eData.target.files[0];
     const fileViz = eViz.target.files[0];
-
+    const fileArticle = eText.target.files[0];
+    
     var reader1 = new FileReader();
     var reader2 = new FileReader();
+    var reader3 = new FileReader();
 
     var loadViz = new Promise(function (resolve) {
 
@@ -39,21 +41,32 @@ const createPromises = function (eData, eViz, eText) {
         reader2.addEventListener("load", resolve, false);
         reader2.readAsText(fileData);
     })
-    return [loadViz, loadData]
+
+    var loadArticle = new Promise(function (resolve) {
+        reader3.addEventListener("load", resolve, false);
+        reader3.readAsText(fileArticle);
+    })
+
+    return [loadViz, loadData, loadArticle]
 }
 
 Promise.all([nwPromise(dataInput), nwPromise(vizInput), nwPromise(textInput)])
     .then(function ([eData, eViz, eText]) {
 
-        Promise.all(createPromises(eData, eViz, eText)).then(function ([_, eDataLoad]) {
+        Promise.all(createPromises(eData, eViz, eText)).then(function ([_, eDataLoad, eTextLoad]) {
             let zone = d3.select("#sec_input")
-
+            
             var dataGlobal = new Data(eDataLoad.target.result, zone);
             
             dataGlobal.addImg(img);
+            dataGlobal.addArticle(eTextLoad.target.result)
             dataGlobal.update();
             dataGlobal.createUserInput();
             dataGlobal.updateAttrValues();
+
+            /*
+            *   Génération des questions / réponses   
+            */
 
             let qrLocal = new QR(testQ, d3.select("#sec_question"));
             qrLocal.display();

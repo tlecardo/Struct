@@ -20,7 +20,11 @@ class Data {
         });
     }
 
-    addImg(img) { 
+    addArticle(article) {
+        this.article = article;
+    }
+
+    addImg(img) {
         this.img = new ImgColor(img);
         this.img.computePalette(5);
     }
@@ -64,7 +68,7 @@ class Data {
     #updateCat() {
         // catégorique, numérique, ordinale
         this.attrList.forEach(attr => {
-            
+
             let typeAttr = this.attr[attr].type;
             if (typeAttr === "string") {
                 this.attr[attr]["cat"] = "catégorique";
@@ -148,7 +152,7 @@ class Data {
         try {
             this.attr[axisAttr].label = axis;
         } catch {
-            this.attrList.forEach(attr => {if (this.attr[attr].label === axis) {this.attr[attr].label = null;}})
+            this.attrList.forEach(attr => { if (this.attr[attr].label === axis) { this.attr[attr].label = null; } })
         }
         return axisAttr;
     }
@@ -173,10 +177,13 @@ class Data {
             disp.innerText = JSON.stringify(this.attr);
             disp.innerText += JSON.stringify(this.colors);
 
-            if ( Xatt !== "Sélectionner un attribut" && Yatt !== "Sélectionner un attribut") {
+            if (Xatt !== "Sélectionner un attribut" && Yatt !== "Sélectionner un attribut") {
                 console.log(this.textIntro(Xatt, Yatt))
-                console.log(this.textAttr());
+                // Subdivision de la visualisation
                 console.log(this.textColors());
+                console.log(this.textData());
+                console.log(this.textAttr());
+                console.log(this.textArticle());
             }
         })
     }
@@ -188,25 +195,34 @@ class Data {
     }
 
     textColors() {
-        let text = `Les couleurs majoritaires sont le `;
-        Object.keys(this.colors).forEach( c => text += c);
-        text += ". ";
-        
-        Object.entries(this.colors).forEach( (c) => {
-            text += `Le ${c[0]} représente ${c[1]}. `
-        });
+        let len = this.colors.length;
+        if (len != 0) {
+            let text = (len === 1) ? "La couleur majoritaire est le " : "Les couleurs majoritaires sont le ";
 
-        return text;
+            Object.keys(this.colors).forEach(c => text += c + ', ');
+            text = text.slice(0, -2);
+            text += ". ";
+
+            return Object.entries(this.colors).reduce((acc, c) =>
+                `${acc} Le ${c[0]} représente le ${c[1]}. `, text);
+        }
+    }
+
+    textData() {
+        let data = JSON.stringify(this.json);
+        data = data.replace("[", "(").replace("]", ")")
+        data = data.replace("{", "[").replace("}", "]")
+        return `Il représente les données suivantes : ${data}`
     }
 
     textAttr() {
-        let text = "";
-        for (let couple of Object.entries(this.attr)) {
-            text += `L'attribut "${couple[0]}" correspond à ${couple[1].description}.`
-        }
-        return text;
+        return Object.entries(this.attr).reduce((acc, c) =>
+            `${acc} L'attribut "${c[0]}" correspond à ${c[1].description}.`, "")
     }
 
+    textArticle() {
+        return `Il est accompagné de l'article de presse suivant : "${this.article}".`;
+    }
 }
 
 export { Data };
