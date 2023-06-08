@@ -12,7 +12,7 @@ class Data {
         this.img = null;
         this.zone = zone;
         this.attr = {};
-
+        this.type = "bar" // "circle"
         this.attrList.forEach(item => {
             this.attr[item] = {
                 values: [],
@@ -109,7 +109,7 @@ class Data {
     createUserInput() {
         this.#createLabelAxisInput();
         this.#createDescriptionInput();
-        this.img.createColorsInput(this.zone, this.attrList);
+        this.img.createColorsInput(this.zone, this.attr, this.type);
         this.img.createTitleInput(this.zone);
     }
 
@@ -132,11 +132,13 @@ class Data {
             .text(name => name)
     }
 
-    #createLabelAxisInput() {
-        let selectAxis = this.zone.append("div")
-            .attr("class", `axisSelector`)
-        this.#createLabelAxis("X", selectAxis);
-        this.#createLabelAxis("Y", selectAxis);
+     #createLabelAxisInput() {
+        if (this.type !== "circle") {
+            let selectAxis = this.zone.append("div")
+                .attr("class", `axisSelector`)
+            this.#createLabelAxis("X", selectAxis);
+            this.#createLabelAxis("Y", selectAxis);
+        }
     }
 
     #createDescriptionInput() {

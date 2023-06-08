@@ -64,21 +64,33 @@ class ImgColor {
         return this.colors.reduce((prec, val) => { prec.push(ntc.name(this.#rgbToHex(val))); return prec; }, []);
     }
 
-    createColorsInput(vizZone, attrList) {
+    createColorsInput(vizZone, dataset, type) {
         let colors = this.getColors();
 
         let viz_sec = vizZone.append("div")
             .attr("class", "colorSelector");
 
+        let listData = []
+        for(let item of Object.keys(dataset)) {
+            listData.push(item);
+            if (type == "circle") {
+                if (dataset[item].type === "string") {
+                    for (let val of dataset[item].values){
+                        listData.push(val)
+                    }
+                }
+            }
+        }
+
         viz_sec.append("datalist")
             .attr("id", "attrs")
             .selectAll("*")
-            .data(attrList)
+            .data(listData)
             .enter()
             .append("option")
             .attr("value", n => n)
             .text(n => n)
-        
+
         let boxes = viz_sec.selectAll("color")
             .data(colors)
             .enter()
