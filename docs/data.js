@@ -33,13 +33,23 @@ class Data {
         this.img.computePalette(5);
     }
 
+
+    postLine(line) {
+        let regex = /"([^"]+)"/;
+        let subStr = (line.match(regex) !== null)? line.match(regex)[0]: "";
+        let rplc = line.replace(subStr, "><")
+        subStr = subStr.replaceAll(",", "").replaceAll("\"", "")
+        return rplc.replace("><", subStr)
+    }
+
     #csv2Json(text, sep) {
         var lines = text.split("\n")
         var headers = lines.shift().split(sep)
 
         var res = lines.reduce((acc, line) => {
             var obj = {};
-            var curr_line = line.split(sep);
+            var nwline = this.postLine(line)
+            var curr_line = nwline.split(sep);
             for (var j = 0; j < headers.length; j++) {
                 var elem = curr_line[j];
                 obj[headers[j]] = isNaN(elem) ? elem : Number(elem);
