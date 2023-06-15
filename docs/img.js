@@ -73,7 +73,7 @@ class ImgColor {
         let listData = []
         for(let item of Object.keys(dataset)) {
             listData.push(item);
-            if (type == "circle") {
+            if (type == "PieChart") {
                 if (dataset[item].type === "string") {
                     for (let val of dataset[item].values){
                         listData.push(val)

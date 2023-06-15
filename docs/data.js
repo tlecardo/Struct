@@ -178,8 +178,8 @@ class Data {
                 this.attr[item].description = document.getElementById(item).value.toLowerCase();
             })
             // update Axis attribut selection
-            let Xatt = this.#getAttrAxis("X");
-            let Yatt = this.#getAttrAxis("Y");
+            let Xatt = (this.type != "PieChart") ? this.#getAttrAxis("X"): null;
+            let Yatt = (this.type != "PieChart") ? this.#getAttrAxis("Y"): null;
 
             this.colors = {};
             let inputs = document.querySelectorAll('.colorSelector div input')
@@ -206,9 +206,11 @@ class Data {
     }
 
     textIntro(Xatt, Yatt) {
-        return `Il s'agit d'un graphique intitulé "${this.img.title}". 
-        L'axe X représente ${this.attr[Xatt].description}. Il s'agit de données ${this.attr[Xatt].cat}. 
-        L'axe Y représente ${this.attr[Yatt].description}. Il s'agit de données ${this.attr[Yatt].cat}.`;
+        if (this.type == "BarChart") {
+            return `Il s'agit d'un graphique intitulé "${this.img.title}". 
+            L'axe X représente ${this.attr[Xatt].description}. Il s'agit de données ${this.attr[Xatt].cat}. 
+            L'axe Y représente ${this.attr[Yatt].description}. Il s'agit de données ${this.attr[Yatt].cat}.`;
+       }
     }
 
     textColors() {
