@@ -55,7 +55,8 @@ Promise.all([nwPromise(dataInput), nwPromise(vizInput), nwPromise(textInput)])
 
         Promise.all(createPromises(eData, eViz, eText)).then(function ([_, eDataLoad, eTextLoad]) {
             let zone = d3.select("#sec_input")
-            
+            let type = d3.select("#typeSelec").property("value")
+            console.log(type)       
             var dataGlobal = new Data(eDataLoad.target.result, zone);
             
             dataGlobal.addImg(img);

@@ -6,13 +6,13 @@ let NUM = "numérique";
 
 class Data {
 
-    constructor(csv, zone) {
+    constructor(csv, zone, type) {
         this.json = this.#csv2Json(csv, ",");
         this.attrList = Object.keys(this.json[0]);
         this.img = null;
         this.zone = zone;
         this.attr = {};
-        this.type = "bar" // "circle"
+        this.type = type; // BarChart PieChart LineChart
         this.attrList.forEach(item => {
             this.attr[item] = {
                 values: [],
@@ -133,7 +133,7 @@ class Data {
     }
 
      #createLabelAxisInput() {
-        if (this.type !== "circle") {
+        if (this.type !== "PieChart") {
             let selectAxis = this.zone.append("div")
                 .attr("class", `axisSelector`)
             this.#createLabelAxis("X", selectAxis);
